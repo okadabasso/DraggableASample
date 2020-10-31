@@ -21,8 +21,8 @@
                      >
                 <Canvas
                     
-                    Width="{Binding Width.Value}"
-                    Height="{Binding Height.Value}"
+                    Width="{Binding ResizableWidth.Value}"
+                    Height="{Binding ResizableHeight.Value}"
                     Background="Transparent"
                    
                 >
@@ -37,10 +37,10 @@
                             Opacity="1">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="DragDelta">
-                                <prism:InvokeCommandAction Command="{Binding DragDeltaCommand}"/>
+                                <prism:InvokeCommandAction Command="{Binding ResizableDragDeltaCommand}"/>
                             </i:EventTrigger>
                             <i:EventTrigger EventName="DragStarted">
-                                <prism:InvokeCommandAction Command="{Binding DragStartedCommand}"/>
+                                <prism:InvokeCommandAction Command="{Binding ResizableDragStartedCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Thumb>
@@ -49,6 +49,43 @@
 
             </Border>
 
+            <Border  BorderThickness="2"
+                BorderBrush="Black"
+                Background="LightGray"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                 Canvas.Top="{Binding DraggableTop.Value}"
+                     Canvas.Left="{Binding DraggableLeft.Value}"
+                     >
+                <Canvas
+                    Name="draggable"
+                    Width="200"
+                    Height="200"
+                    Background="Transparent"
+                   
+                >
+                    <Thumb  
+                            DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Canvas}}}"
+                            Background="Gray"
+                            
+                            Canvas.Top="0"
+                            Canvas.Left="0"
+                            Width="200"
+                            Height="200"
+                            Opacity="0.1">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="DragDelta">
+                                <prism:InvokeCommandAction Command="{Binding DraggableDragDeltaCommand}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="DragStarted">
+                                <prism:InvokeCommandAction Command="{Binding DraggableDragStartedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Thumb>
+
+                </Canvas>
+
+            </Border>
         </Canvas>
     </DockPanel>
 </UserControl>
