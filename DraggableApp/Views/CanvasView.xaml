@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="DraggableApp.Views.CanvasView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <DockPanel Margin="16">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+            <TextBlock Text="{Binding X.Value}" Width="50"></TextBlock>
+            <TextBlock Text="{Binding Y.Value}" Width="50"></TextBlock>
+        </StackPanel>
+        <Canvas Background="LightCyan">
+
+            <Border  BorderThickness="2"
+                BorderBrush="Black"
+                Background="LightGray"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                 Canvas.Top="100"
+                     Canvas.Left="100"
+                     >
+                <Canvas
+                    
+                    Width="{Binding Width.Value}"
+                    Height="{Binding Height.Value}"
+                    Background="Transparent"
+                   
+                >
+                    <Thumb  x:Name="rectangleThumb"
+                            DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Canvas}}}"
+                            Background="Red"
+                            
+                            Canvas.Right="0"
+                            Canvas.Bottom="0"
+                            Width="10"
+                            Height="10"
+                            Opacity="1">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="DragDelta">
+                                <prism:InvokeCommandAction Command="{Binding DragDeltaCommand}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="DragStarted">
+                                <prism:InvokeCommandAction Command="{Binding DragStartedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Thumb>
+
+                </Canvas>
+
+            </Border>
+
+        </Canvas>
+    </DockPanel>
+</UserControl>
