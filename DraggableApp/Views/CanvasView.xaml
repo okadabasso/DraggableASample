@@ -51,7 +51,7 @@
 
             <Border  BorderThickness="2"
                 BorderBrush="Black"
-                Background="LightGray"
+                Background="Silver"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                  Canvas.Top="{Binding DraggableTop.Value}"
@@ -66,7 +66,7 @@
                 >
                     <Thumb  
                             DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Canvas}}}"
-                            Background="Gray"
+                            Background="Transparent"
                             
                             Canvas.Top="0"
                             Canvas.Left="0"

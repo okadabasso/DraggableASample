@@ -11,7 +11,7 @@ namespace DraggableApp.Views
         public MainWindow(IRegionManager regionManager)
         {
             InitializeComponent();
-            regionManager.RegisterViewWithRegion("ContentRegion", typeof(CanvasView));
+            regionManager.RegisterViewWithRegion("ContentRegion", typeof(LineDragView));
         }
     }
 }
