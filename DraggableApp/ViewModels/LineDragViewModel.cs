@@ -19,7 +19,7 @@ namespace DraggableApp.ViewModels
 
         public DelegateCommand<DragDeltaEventArgs> LineDragDeltaCommand { get; set; }
         public DelegateCommand<DragStartedEventArgs> LineDragStartedCommand { get; set; }
-        public DelegateCommand<DragCompletedEventArgs> LineDragCompleetedCommand { get; set; }
+        public DelegateCommand<DragCompletedEventArgs> LineDragCompletedCommand { get; set; }
 
         public ReactiveProperty<int> DraggableTop { get; set; } = new ReactiveProperty<int>(200);
         public ReactiveProperty<int> DraggableLeft { get; set; } = new ReactiveProperty<int>(100);
@@ -38,6 +38,7 @@ namespace DraggableApp.ViewModels
         };
 
         int lineIndex;
+        public ReactiveProperty<string> Message { get; set; } = new ReactiveProperty<string>();
         public LineDragViewModel()
         {
             DraggableDragDeltaCommand = new DelegateCommand<DragDeltaEventArgs>((x) =>
@@ -82,6 +83,7 @@ namespace DraggableApp.ViewModels
                     Points[lineIndex] = new Point(target.StartPoint.X, target.StartPoint.Y);
                     Points[lineIndex + 1] = new Point(target.EndPoint.X, target.EndPoint.Y);
 
+
                 }
                 if (target.StartPoint.Y == target.EndPoint.Y)
                 {
@@ -102,6 +104,82 @@ namespace DraggableApp.ViewModels
                 Y.Value = target.StartPoint.Y;
                 args.Handled = true;
                 RaisePropertyChanged(nameof(Points));
+            });
+            LineDragCompletedCommand = new DelegateCommand<DragCompletedEventArgs>((args) =>
+            {
+                if (Lines[lineIndex + 1].StartPoint == Lines[lineIndex + 1].EndPoint)
+                {
+                    Lines.Remove(Lines[lineIndex + 1]);
+                    if ((lineIndex + 1) < Lines.Count)
+                    {
+                        if (Lines[lineIndex].StartPoint.X == Lines[lineIndex + 1].StartPoint.X ||
+                        Lines[lineIndex].StartPoint.Y == Lines[lineIndex + 1].StartPoint.Y)
+                        {
+                            Lines[lineIndex].EndPoint = Lines[lineIndex + 1].EndPoint;
+                            Lines.Remove(Lines[lineIndex + 1]);
+                        }
+                    }
+                }
+                if(lineIndex > 0)
+                {
+                    if (Lines[lineIndex - 1].StartPoint == Lines[lineIndex - 1].EndPoint)
+                    {
+                        Lines.Remove(Lines[lineIndex - 1]);
+                        if ((lineIndex - 2) >= 0)
+                        {
+                            if (Lines[lineIndex - 2].StartPoint.X == Lines[lineIndex - 1].StartPoint.X ||
+                            Lines[lineIndex - 2].StartPoint.Y == Lines[lineIndex - 1].StartPoint.Y)
+                            {
+                                Lines[lineIndex - 1].StartPoint = Lines[lineIndex - 2].StartPoint;
+                                Lines.Remove(Lines[lineIndex - 2]);
+                            }
+                        }
+                    }
+
+                }
+                if (Points[lineIndex + 1] == Points[lineIndex + 2])
+                {
+                    Points.Remove(Points[lineIndex + 1]);
+                    if ((lineIndex + 2) < Points.Count)
+                    {
+                        if (Points[lineIndex].X == Points[lineIndex + 1].X && Points[lineIndex + 1].X == Points[lineIndex + 2].X ||
+                        Points[lineIndex].Y == Points[lineIndex + 1].Y && Points[lineIndex + 1].Y == Points[lineIndex + 2].Y)
+                        {
+                            Points.Remove(Points[lineIndex + 1]);
+                        }
+                    }
+                }
+                if(lineIndex > 0)
+                {
+                    if (Points[lineIndex - 1] == Points[lineIndex])
+                    {
+                        Points.Remove(Points[lineIndex]);
+                        lineIndex--;
+                        if ((lineIndex - 1) >= 0)
+                        {
+                            if (Points[lineIndex - 1].X == Points[lineIndex].X ||
+                            Points[lineIndex - 1].Y == Points[lineIndex].Y)
+                            {
+                                Points.Remove(Points[lineIndex]);
+                            }
+                        }
+                    }
+
+                }
+                RaisePropertyChanged(nameof(Points));
+
+                var message = "";
+                foreach(var point in Points)
+                {
+                    message += point.ToString() + Environment.NewLine;
+                }
+                message +=  Environment.NewLine;
+                foreach (var line in Lines)
+                {
+                    message += line.StartPoint.ToString() + " " + line.EndPoint.ToString() + Environment.NewLine;
+                }
+                Message.Value = message;
+
             });
             LineDragStartedCommand = new DelegateCommand<DragStartedEventArgs>((x) =>
             {

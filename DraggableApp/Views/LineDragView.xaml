@@ -6,9 +6,8 @@
              xmlns:converters="clr-namespace:DraggableApp.Converters"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <DockPanel Margin="16">
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-            <TextBlock Text="{Binding X.Value}" Width="50"></TextBlock>
-            <TextBlock Text="{Binding Y.Value}" Width="50"></TextBlock>
+        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Width="160">
+            <TextBlock Text="{Binding Message.Value}" ></TextBlock>
         </StackPanel>
         <Canvas Background="White" ClipToBounds="True">
             <Border BorderBrush="Black" BorderThickness="1" Width="100" Height="100" Background="#eee"
@@ -69,6 +68,12 @@
                                     <i:EventTrigger EventName="DragStarted">
                                         <prism:InvokeCommandAction 
                                             Command="{Binding DataContext.LineDragStartedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                            
+                                            />
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="DragCompleted">
+                                        <prism:InvokeCommandAction 
+                                            Command="{Binding DataContext.LineDragCompletedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
                                             
                                             />
                                     </i:EventTrigger>
