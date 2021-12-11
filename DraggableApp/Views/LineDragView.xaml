@@ -44,7 +44,10 @@
                 <ItemsControl ItemsSource="{Binding Lines}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Thumb Background="Transparent" Opacity="1" Cursor="Hand">
+                            <Thumb Background="Transparent" Opacity="1" 
+                                   MouseMove="Thumb_MouseMove"
+                                   MouseEnter="Thumb_MouseEnter"
+                                   MouseLeave="Thumb_MouseLeave">
                                 <Thumb.Template>
                                     <ControlTemplate>
                                         <Canvas>
