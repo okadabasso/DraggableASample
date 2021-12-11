@@ -41,9 +41,6 @@
                 Stroke="Red" 
                 StrokeThickness="2" 
                 ></Polyline>
-
-            </Canvas>
-            <Canvas>
                 <ItemsControl ItemsSource="{Binding Lines}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
