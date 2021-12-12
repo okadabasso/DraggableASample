@@ -41,6 +41,7 @@ namespace DraggableApp.ViewModels
  
         int lineIndex;
         public ReactiveProperty<string> Message { get; set; } = new ReactiveProperty<string>();
+        public ReactiveProperty<string> Test { get; set; } = new ReactiveProperty<string>();
         public LineDragViewModel()
         {
             DraggableDragDeltaCommand = new DelegateCommand<DragDeltaEventArgs>((x) =>
@@ -207,6 +208,8 @@ namespace DraggableApp.ViewModels
                 message += line.StartPoint.ToString() + " " + line.EndPoint.ToString() + Environment.NewLine;
             }
             Message.Value = message;
+            Test.Value = Points.Count.ToString();
+            RaisePropertyChanged(nameof(Test));
         }
     }
 }

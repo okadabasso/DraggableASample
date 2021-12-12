@@ -4,10 +4,12 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:prism="http://prismlibrary.com/"   
              xmlns:converters="clr-namespace:DraggableApp.Converters"
+             xmlns:controls="clr-namespace:DraggableApp.Controls"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <DockPanel Margin="16">
         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Width="160">
             <TextBlock Text="{Binding Message.Value}" ></TextBlock>
+            <controls:SampleControl ProductCode="{Binding Test.Value}"></controls:SampleControl>
         </StackPanel>
         <Canvas Background="White" ClipToBounds="True">
             <Border BorderBrush="Black" BorderThickness="1" Width="100" Height="100" Background="#eee"
