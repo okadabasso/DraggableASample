@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="DraggableApp.Views.ConnectorSampleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             xmlns:controls="clr-namespace:DraggableApp.Controls.Views"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <DockPanel>
+        <Canvas>
+            <controls:Connector DataContext="{Binding Connector}"></controls:Connector>
+        </Canvas>
+    </DockPanel>
+</UserControl>

@@ -29,7 +29,7 @@ namespace DraggableApp.Controls
         {
             ProductCodeTextBox = new TextBox();
             ProductCodeTextBox.Height = 30;
-            ProductCodeTextBox.Width = 192;
+            ProductCodeTextBox.Width = 64;
             ProductCodeTextBox.BorderBrush = new SolidColorBrush(Colors.Red);
             ProductCodeTextBox.Foreground = new SolidColorBrush(Colors.Black);
 

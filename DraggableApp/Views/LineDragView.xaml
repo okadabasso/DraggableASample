@@ -7,35 +7,10 @@
              xmlns:controls="clr-namespace:DraggableApp.Controls"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <DockPanel Margin="16">
-        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Width="160">
+        <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Width="160">
             <TextBlock Text="{Binding Message.Value}" ></TextBlock>
-            <controls:SampleControl ProductCode="{Binding Test.Value}"></controls:SampleControl>
         </StackPanel>
         <Canvas Background="White" ClipToBounds="True">
-            <Border BorderBrush="Black" BorderThickness="1" Width="100" Height="100" Background="#eee"
-                    Canvas.Top="{Binding DraggableTop.Value}"
-                    Canvas.Left="{Binding DraggableLeft.Value}">
-                <Canvas 
-                    Width="100"
-                    Height="100"
-                    
-                    >
-                    <Grid Background="Transparent" >
-                        <TextBlock Text="Sample"></TextBlock>
-                    </Grid>
-                    <Thumb Width="100" Height="100" Background="Transparent" Opacity="0" Cursor="Cross">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="DragDelta">
-                                <prism:InvokeCommandAction Command="{Binding DraggableDragDeltaCommand}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="DragStarted">
-                                <prism:InvokeCommandAction Command="{Binding DraggableDragStartedCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Thumb>
-
-                </Canvas>
-            </Border>
 
             <Canvas>
                 <Polyline Name="line" 

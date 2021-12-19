@@ -1,48 +1,37 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
-using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace DraggableApp.ViewModels
+namespace DraggableApp.Controls.ViewModels
 {
-    public class LineDragViewModel : BindableBase
+    public class ConnectorViewModel : BindableBase
     {
-
+        public ObservableCollection<Point> Points { get; set; } = new ObservableCollection<Point>();
         public DelegateCommand<DragDeltaEventArgs> LineDragDeltaCommand { get; set; }
         public DelegateCommand<DragStartedEventArgs> LineDragStartedCommand { get; set; }
         public DelegateCommand<DragCompletedEventArgs> LineDragCompletedCommand { get; set; }
+        public ObservableCollection<LineGeometry> Lines { get; set; } = new ObservableCollection<LineGeometry>();
 
-        public ReactiveProperty<int> DraggableTop { get; set; } = new ReactiveProperty<int>(200);
-        public ReactiveProperty<int> DraggableLeft { get; set; } = new ReactiveProperty<int>(100);
+
         private Point InitialPosition;
-        public ReactiveProperty<double> X { get; set; } = new ReactiveProperty<double>();
-        public ReactiveProperty<double> Y { get; set; } = new ReactiveProperty<double>();
-        public ObservableCollection<Point> Points { get; set; } = new ObservableCollection<Point>(
-            new Point[] {
-            new Point(100, 100),
-            new Point(100, 200),
-            new Point(200, 200) });
-
-        public ObservableCollection<LineGeometry> Lines { get; set; } = new ObservableCollection<LineGeometry>() { 
-            new LineGeometry(new Point(100,100), new Point(100,200)),
-            new LineGeometry(new Point(100,200), new Point(200,200)),
-        };
-
- 
         int lineIndex;
-        public ReactiveProperty<string> Message { get; set; } = new ReactiveProperty<string>();
-        public LineDragViewModel()
-        {
 
-            // line drag
+        public ConnectorViewModel(List<Point> points)
+        {
+            Points = new ObservableCollection<Point>(points);
+            Lines = new ObservableCollection<LineGeometry>();
+            for(var i = 0; i < points.Count - 1; i++)
+            {
+                Lines.Add(new LineGeometry(points[i], points[i + 1]));
+            }
+
             LineDragDeltaCommand = new DelegateCommand<DragDeltaEventArgs>(OnDragDelta);
             LineDragCompletedCommand = new DelegateCommand<DragCompletedEventArgs>(OnDragCompleted);
             LineDragStartedCommand = new DelegateCommand<DragStartedEventArgs>(OnDragStarted);
@@ -110,13 +99,8 @@ namespace DraggableApp.ViewModels
                 Points[lineIndex + 1] = new Point(target.EndPoint.X, target.EndPoint.Y);
 
             }
-
-
-            X.Value = args.HorizontalChange;
-            Y.Value = target.StartPoint.Y;
             args.Handled = true;
             RaisePropertyChanged(nameof(Points));
-
         }
         private void OnDragCompleted(DragCompletedEventArgs args)
         {
@@ -181,17 +165,6 @@ namespace DraggableApp.ViewModels
             }
             RaisePropertyChanged(nameof(Points));
 
-            var message = "";
-            foreach (var point in Points)
-            {
-                message += point.ToString() + Environment.NewLine;
-            }
-            message += Environment.NewLine;
-            foreach (var line in Lines)
-            {
-                message += line.StartPoint.ToString() + " " + line.EndPoint.ToString() + Environment.NewLine;
-            }
-            Message.Value = message;
         }
     }
 }

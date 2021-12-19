@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="DraggableApp.Controls.Views.Connector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:prism="http://prismlibrary.com/"   
+             xmlns:converters="clr-namespace:DraggableApp.Converters"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Canvas>
+        <Polyline Name="line" 
+                Points="{Binding Points,Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={x:Static converters:ConnectionPathConverter.Instance}}" 
+                Stroke="Red" 
+                StrokeThickness="2" 
+                ></Polyline>
+        <ItemsControl ItemsSource="{Binding Lines}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Thumb Background="Transparent" Opacity="1" 
+                                   MouseMove="Thumb_MouseMove"
+                                   MouseEnter="Thumb_MouseEnter"
+                                   MouseLeave="Thumb_MouseLeave">
+                        <Thumb.Template>
+                            <ControlTemplate>
+                                <Canvas>
+                                    <Line Canvas.Top="0" Canvas.Left="0" 
+                                        X1="{Binding StartPoint.X}" 
+                                        Y1="{Binding StartPoint.Y}" 
+                                        X2="{Binding EndPoint.X}"  
+                                        Y2="{Binding EndPoint.Y}" StrokeThickness="3" Stroke="Transparent"/>
+
+                                </Canvas>
+                            </ControlTemplate>
+                        </Thumb.Template>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="DragDelta">
+                                <prism:InvokeCommandAction 
+                                            Command="{Binding DataContext.LineDragDeltaCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="DragStarted">
+                                <prism:InvokeCommandAction 
+                                            Command="{Binding DataContext.LineDragStartedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                            
+                                            />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="DragCompleted">
+                                <prism:InvokeCommandAction 
+                                            Command="{Binding DataContext.LineDragCompletedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                            
+                                            />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Thumb>
+
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+    </Canvas>
+</UserControl>
