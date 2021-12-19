@@ -20,7 +20,8 @@ namespace DraggableApp.ViewModels
                 new System.Windows.Point(200,300),
                 new System.Windows.Point(300,300),
             }) ;
-            ;
+            
+            // continue
         }
     }
 }
