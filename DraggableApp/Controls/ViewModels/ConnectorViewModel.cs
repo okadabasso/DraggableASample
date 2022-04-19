@@ -14,10 +14,30 @@ namespace DraggableApp.Controls.ViewModels
     public class ConnectorViewModel : BindableBase
     {
         public ObservableCollection<Point> Points { get; set; } = new ObservableCollection<Point>();
+        public ObservableCollection<LineGeometry> Lines { get; set; } = new ObservableCollection<LineGeometry>();
+
+        private Point _startPoint;
+        public Point StartPoint
+        {
+            get => _startPoint;
+            set => SetProperty(ref _startPoint, value);
+        }
+
+        private Point _endPoint;
+        public Point EndPoint
+        {
+            get => _endPoint;
+            set => SetProperty(ref _endPoint, value);
+        }
+
         public DelegateCommand<DragDeltaEventArgs> LineDragDeltaCommand { get; set; }
         public DelegateCommand<DragStartedEventArgs> LineDragStartedCommand { get; set; }
         public DelegateCommand<DragCompletedEventArgs> LineDragCompletedCommand { get; set; }
-        public ObservableCollection<LineGeometry> Lines { get; set; } = new ObservableCollection<LineGeometry>();
+
+        public DelegateCommand<DragDeltaEventArgs> EdgeDragDeltaCommand { get; set; }
+        public DelegateCommand<DragStartedEventArgs> EdgeDragStartedCommand { get; set; }
+        public DelegateCommand<DragCompletedEventArgs> EdgeDragCompletedCommand { get; set; }
+
 
 
         private Point InitialPosition;
@@ -31,11 +51,16 @@ namespace DraggableApp.Controls.ViewModels
             {
                 Lines.Add(new LineGeometry(points[i], points[i + 1]));
             }
+            StartPoint = points.FirstOrDefault();
+            EndPoint = points.LastOrDefault();
 
-            LineDragDeltaCommand = new DelegateCommand<DragDeltaEventArgs>(OnDragDelta);
-            LineDragCompletedCommand = new DelegateCommand<DragCompletedEventArgs>(OnDragCompleted);
-            LineDragStartedCommand = new DelegateCommand<DragStartedEventArgs>(OnDragStarted);
+            LineDragDeltaCommand = new DelegateCommand<DragDeltaEventArgs>(OnLineDragDelta);
+            LineDragCompletedCommand = new DelegateCommand<DragCompletedEventArgs>(OnLineDragCompleted);
+            LineDragStartedCommand = new DelegateCommand<DragStartedEventArgs>(OnLineDragStarted);
 
+            EdgeDragDeltaCommand = new DelegateCommand<DragDeltaEventArgs>(OnEdgeDragDelta);
+            EdgeDragCompletedCommand = new DelegateCommand<DragCompletedEventArgs>(OnEdgeDragCompleted);
+            EdgeDragStartedCommand = new DelegateCommand<DragStartedEventArgs>(OnEdgeDragStarted);
         }
         public void DoEvents()
         {
@@ -48,7 +73,7 @@ namespace DraggableApp.Controls.ViewModels
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, callback, frame);
             Dispatcher.PushFrame(frame);
         }
-        private void OnDragStarted(DragStartedEventArgs args)
+        private void OnLineDragStarted(DragStartedEventArgs args)
         {
             var source = (args.Source as Thumb).DataContext as LineGeometry;
             lineIndex = Lines.Select((v, i) => new { line = v, i })
@@ -57,7 +82,7 @@ namespace DraggableApp.Controls.ViewModels
             InitialPosition = new Point { X = source.StartPoint.X, Y = source.StartPoint.Y };
 
         }
-        private void OnDragDelta(DragDeltaEventArgs args)
+        private void OnLineDragDelta(DragDeltaEventArgs args)
         {
             var target = Lines[lineIndex];
             if (lineIndex == 0)
@@ -102,7 +127,7 @@ namespace DraggableApp.Controls.ViewModels
             args.Handled = true;
             RaisePropertyChanged(nameof(Points));
         }
-        private void OnDragCompleted(DragCompletedEventArgs args)
+        private void OnLineDragCompleted(DragCompletedEventArgs args)
         {
             if (Lines[lineIndex + 1].StartPoint == Lines[lineIndex + 1].EndPoint)
             {
@@ -164,6 +189,18 @@ namespace DraggableApp.Controls.ViewModels
 
             }
             RaisePropertyChanged(nameof(Points));
+
+        }
+        private void OnEdgeDragStarted(DragStartedEventArgs args)
+        {
+            var source = (args.Source as Thumb).DataContext;
+
+        }
+        private void OnEdgeDragDelta(DragDeltaEventArgs args)
+        {
+        }
+        private void OnEdgeDragCompleted(DragCompletedEventArgs args)
+        {
 
         }
     }

@@ -4,8 +4,8 @@
              xmlns:prism="http://prismlibrary.com/"             
              xmlns:controls="clr-namespace:DraggableApp.Controls.Views"             
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <DockPanel>
-        <Canvas>
+    <DockPanel Margin="8">
+        <Canvas Background="White">
             <controls:Connector DataContext="{Binding Connector}"></controls:Connector>
         </Canvas>
     </DockPanel>
