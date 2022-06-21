@@ -56,8 +56,11 @@
         <Border Canvas.Left="{Binding StartPoint.X}" Canvas.Top="{Binding StartPoint.Y}"
                 Width="8" Height="8"
                 Margin="-4"
-                BorderBrush="Black" BorderThickness="1">
-            <Thumb  Background="Transparent" Opacity="1" BorderThickness="0" BorderBrush="Transparent">
+                BorderBrush="Black" 
+                BorderThickness="2"
+                Background="White"
+                >
+            <Thumb Name="startPoint"  Background="Transparent" Opacity="0" BorderThickness="0" BorderBrush="Transparent">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="DragDelta">
                         <prism:InvokeCommandAction Command="{Binding EdgeDragDeltaCommand}" />
@@ -75,7 +78,7 @@
                 Width="8" Height="8"
                 Margin="-4"
                 BorderBrush="Black" BorderThickness="1">
-            <Thumb  Background="Transparent" Opacity="1" BorderThickness="0" BorderBrush="Transparent">
+            <Thumb Name="endPoint" Background="Transparent" Opacity="1" BorderThickness="0" BorderBrush="Transparent">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="DragDelta">
                         <prism:InvokeCommandAction Command="{Binding EdgeDragDeltaCommand}" />

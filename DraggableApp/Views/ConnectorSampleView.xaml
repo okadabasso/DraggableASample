@@ -5,6 +5,12 @@
              xmlns:controls="clr-namespace:DraggableApp.Controls.Views"             
              prism:ViewModelLocator.AutoWireViewModel="True">
     <DockPanel Margin="8">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="0 8 0 0 ">
+            <Button Content="Reset" Command="{Binding ResetCommand}" Padding="8, 4"></Button>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Left" Width="200" Background="LightGray">
+            <TextBlock Text="{Binding Message.Value}" Margin="8"></TextBlock>
+        </StackPanel>
         <Canvas Background="White">
             <controls:Connector DataContext="{Binding Connector}"></controls:Connector>
         </Canvas>

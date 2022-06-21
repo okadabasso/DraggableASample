@@ -2,9 +2,26 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
+        xmlns:local="clr-namespace:DraggableApp.Views"
         prism:ViewModelLocator.AutoWireViewModel="True"
+       
         Title="{Binding Title}" Height="600" Width="800" >
-    <Grid Background="Gray">
-        <ContentControl prism:RegionManager.RegionName="ContentRegion" />
+    <Grid Background="Transparent">
+        <Grid.RowDefinitions>
+            
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="44"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <ContentControl Grid.Row="0" Grid.Column="0">
+            <ContentControl.Template>
+                <ControlTemplate>
+                    <local:SideMenu></local:SideMenu>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+        <ContentControl Grid.Row="0" Grid.Column="1" prism:RegionManager.RegionName="ContentRegion" Margin="8,0" />
     </Grid>
 </Window>

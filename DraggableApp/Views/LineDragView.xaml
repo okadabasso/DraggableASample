@@ -6,10 +6,15 @@
              xmlns:converters="clr-namespace:DraggableApp.Converters"
              xmlns:controls="clr-namespace:DraggableApp.Controls"
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <DockPanel Margin="16">
-        <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Width="160">
-            <TextBlock Text="{Binding Message.Value}" ></TextBlock>
-        </StackPanel>
+    <DockPanel Background="#eee">
+        <Grid DockPanel.Dock="Left" >
+            <Border>
+                <StackPanel Orientation="Vertical" Width="160">
+                    <TextBlock Text="Values"></TextBlock>
+                    <TextBlock Text="{Binding Message.Value}" ></TextBlock>
+                </StackPanel>
+            </Border>
+        </Grid>
         <Canvas Background="White" ClipToBounds="True">
 
             <Canvas>
