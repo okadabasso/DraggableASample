@@ -206,7 +206,7 @@ namespace DraggableApp.Controls.ViewModels
                 _initialPosition = new Point(StartPoint.X, StartPoint.Y);
                 _pointIndex = 0;
                 _lineIndex = 0;
-                if (Lines.Count == 1)
+                if (Points.Count == 2)
                 {
                     Points.Insert(0, _initialPosition);
                     Lines.Insert(0, new LineGeometry(_initialPosition, _initialPosition));
@@ -218,8 +218,9 @@ namespace DraggableApp.Controls.ViewModels
                 _pointIndex = Points.Count - 1;
                 _lineIndex = Lines.Count - 1;
 
-                if (Lines.Count == 1)
+                if (Points.Count == 2)
                 {
+                    PointsDump.Value = string.Join("\r\n", Points.Select(p => $"{p.X} {p.Y}"));
                     Points.Add(_initialPosition);
                     Lines.Add(new LineGeometry(_initialPosition, _initialPosition));
                     _pointIndex = Points.Count - 1;
@@ -310,8 +311,6 @@ namespace DraggableApp.Controls.ViewModels
                         Points[_pointIndex] = new Point(pointStart.X, pointStart.Y);
                         Points[_pointIndex - 1] = new Point(pointEnd.X, pointEnd.Y);
                     }
-                    PointsDump.Value = "p0 == p1";
-
                 }
                 else if (Points[_pointIndex].X == Points[_pointIndex - 1].X)
                 {
@@ -326,7 +325,6 @@ namespace DraggableApp.Controls.ViewModels
                         Points[_pointIndex] = new Point(pointStart.X, pointStart.Y);
                         Points[_pointIndex - 1] = new Point(pointEnd.X, pointEnd.Y);
                     }
-                    PointsDump.Value = "p0.X == p1.X";
                 }
                 else if (Points[_pointIndex].Y == Points[_pointIndex - 1].Y)
                 {
@@ -341,7 +339,6 @@ namespace DraggableApp.Controls.ViewModels
                         Points[_pointIndex] = new Point(pointStart.X, pointStart.Y);
                         Points[_pointIndex - 1] = new Point(pointEnd.X, pointEnd.Y);
                     }
-                    PointsDump.Value = "p0.Y == p1.Y";
                 }
             }
 
@@ -350,6 +347,7 @@ namespace DraggableApp.Controls.ViewModels
             RaisePropertyChanged(nameof(EndPoint));
             RaisePropertyChanged(nameof(Points));
             RaisePropertyChanged(nameof(Lines));
+            PointsDump.Value = string.Join("\r\n", Points.Select(p => $"{p.X} {p.Y}"));
 
         }
         private void OnEdgeDragCompleted(DragCompletedEventArgs args)
@@ -361,9 +359,8 @@ namespace DraggableApp.Controls.ViewModels
                 {
                     if (Points[_pointIndex] == Points[_pointIndex + 1])
                     {
-                        Points.Remove(Points[_pointIndex + 1]);
-                        Lines.Remove(Lines[_lineIndex + 1]);
-
+                        RemovePoint(_pointIndex + 1, 1);
+                        RemoveLine(_lineIndex + 1, 1);
 
                         if (_pointIndex < Points.Count - 2)
                         {
@@ -372,10 +369,10 @@ namespace DraggableApp.Controls.ViewModels
                     }
                     else if (Points[_pointIndex].X == Points[_pointIndex + 2].X)
                     {
-                        Points.Remove(Points[_pointIndex + 1]);
-                        Points.Remove(Points[_pointIndex + 1]);
-                        Lines.Remove(Lines[_lineIndex + 1]);
-                        Lines.Remove(Lines[_lineIndex + 1]);
+                        RemovePoint(_pointIndex + 1, 1);
+                        RemovePoint(_pointIndex + 1, 1);
+                        RemoveLine(_lineIndex + 1, 1);
+                        RemoveLine(_lineIndex + 1, 1);
 
                         if (_pointIndex < Points.Count - 2)
                         {
@@ -384,10 +381,10 @@ namespace DraggableApp.Controls.ViewModels
                     }
                     else if (Points[_pointIndex].Y == Points[_pointIndex + 2].Y)
                     {
-                        Points.Remove(Points[_pointIndex + 1]);
-                        Points.Remove(Points[_pointIndex + 1]);
-                        Lines.Remove(Lines[_lineIndex + 1]);
-                        Lines.Remove(Lines[_lineIndex + 1]);
+                        RemovePoint(_pointIndex + 1, 1);
+                        RemovePoint(_pointIndex + 1, 1);
+                        RemoveLine(_lineIndex + 1, 1);
+                        RemoveLine(_lineIndex + 1, 1);
 
                         if (_pointIndex < Points.Count - 2)
                         {
@@ -398,7 +395,7 @@ namespace DraggableApp.Controls.ViewModels
            }
             else
             {
-                if(_pointIndex > 2)
+                if(_pointIndex > 1)
                 {
                     if (Points[_pointIndex] == Points[_pointIndex - 1])
                     {
@@ -411,10 +408,10 @@ namespace DraggableApp.Controls.ViewModels
                     }
                     else if (Points[_pointIndex].X == Points[_pointIndex - 2].X)
                     {
-                        Points.Remove(Points[Points.Count - 2]);
-                        Points.Remove(Points[Points.Count - 2]);
-                        Lines.Remove(Lines[Lines.Count - 1]);
-                        Lines.Remove(Lines[Lines.Count - 1]);
+                        RemovePoint(_pointIndex -2, -1);
+                        RemovePoint(_pointIndex -2, -1);
+                        RemoveLine(_lineIndex -1, -1);
+                        RemoveLine(_lineIndex -1, -1);
                         if(_pointIndex > 0)
                         {
                             Lines[Lines.Count - 1].StartPoint = Points[Points.Count - 1];
@@ -422,10 +419,10 @@ namespace DraggableApp.Controls.ViewModels
                     }
                     else if (Points[_pointIndex].Y == Points[_pointIndex - 2].Y)
                     {
-                        Points.Remove(Points[Points.Count - 2]);
-                        Points.Remove(Points[Points.Count - 2]);
-                        Lines.Remove(Lines[Lines.Count - 1]);
-                        Lines.Remove(Lines[Lines.Count - 1]);
+                        RemovePoint(_pointIndex - 2, -1);
+                        RemovePoint(_pointIndex - 2, -1);
+                        RemoveLine(_lineIndex - 1, -1);
+                        RemoveLine(_lineIndex - 1, -1);
 
                         if (_pointIndex > 0)
                         {
@@ -440,6 +437,44 @@ namespace DraggableApp.Controls.ViewModels
             RaisePropertyChanged(nameof(PointsDump));
             RaisePropertyChanged(nameof(Lines));
 
+        }
+
+        private void RemovePoint(int index,int direction)
+        {
+            if(direction < 0)
+            {
+                if (index > 0)
+                {
+                    Points.Remove(Points[index]);
+                }
+
+            }
+            else
+            {
+                if (index < (Points.Count - 1))
+                {
+                    Points.Remove(Points[index]);
+                }
+            }
+        }
+        private void RemoveLine(int index, int direction)
+        {
+            if(direction < 0)
+            {
+                if (index > 1)
+                {
+                    Lines.Remove(Lines[index]);
+                }
+
+            }
+            else
+            {
+                if (index < (Lines.Count - 1))
+                {
+                    Lines.Remove(Lines[index]);
+                }
+
+            }
         }
     }
 }
