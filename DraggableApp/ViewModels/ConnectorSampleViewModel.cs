@@ -16,6 +16,7 @@ namespace DraggableApp.ViewModels
     {
         public ReactiveCommand ResetCommand { get; set; } = new ReactiveCommand();
         public ConnectorViewModel Connector { get; set;  }
+        public DiagramItemVIewModel DiagramItem { get; set; }
         public ReactiveProperty<string> Message { get; set; }= new ReactiveProperty<string>();
         public ReactiveProperty<string> Watcher { get; set; }
         public ConnectorSampleViewModel()
@@ -27,6 +28,12 @@ namespace DraggableApp.ViewModels
                 new System.Windows.Point(200,300),
                 new System.Windows.Point(300,300),
             }) ;
+            DiagramItem = new DiagramItemVIewModel { 
+                Left = 500,
+                Top = 500,
+                Width = 100,
+                Height = 100
+            };
 
             ResetCommand.Subscribe(() => {
                 Connector = new ConnectorViewModel(new List<System.Windows.Point>(){

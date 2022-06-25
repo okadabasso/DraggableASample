@@ -95,10 +95,11 @@ namespace DraggableApp.Controls.ViewModels
                 Points.Insert(0, new Point(target.StartPoint.X, target.StartPoint.Y));
                 _lineIndex = 1;
             }
-            else if ((_lineIndex + 1) >= Lines.Count)
+            if ((_lineIndex + 1) >= Lines.Count)
             {
                 Lines.Add(new LineGeometry(target.StartPoint, target.EndPoint));
                 Points.Add(new Point(target.EndPoint.X, target.EndPoint.Y));
+                _lineIndex = Lines.Count - 2;
             }
 
             if (target.StartPoint.X == target.EndPoint.X)
@@ -133,68 +134,67 @@ namespace DraggableApp.Controls.ViewModels
         }
         private void OnLineDragCompleted(DragCompletedEventArgs args)
         {
-            if (Lines[_lineIndex + 1].StartPoint == Lines[_lineIndex + 1].EndPoint)
+            if(_lineIndex > 0)
             {
-                Lines.Remove(Lines[_lineIndex + 1]);
-                if ((_lineIndex + 1) < Lines.Count)
-                {
-                    if (Lines[_lineIndex].StartPoint.X == Lines[_lineIndex + 1].StartPoint.X ||
-                    Lines[_lineIndex].StartPoint.Y == Lines[_lineIndex + 1].StartPoint.Y)
-                    {
-                        Lines[_lineIndex].EndPoint = Lines[_lineIndex + 1].EndPoint;
-                        Lines.Remove(Lines[_lineIndex + 1]);
-                    }
-                }
-            }
-            if (_lineIndex > 0)
-            {
+
                 if (Lines[_lineIndex - 1].StartPoint == Lines[_lineIndex - 1].EndPoint)
                 {
                     Lines.Remove(Lines[_lineIndex - 1]);
-                    if ((_lineIndex - 2) >= 0)
-                    {
-                        if (Lines[_lineIndex - 2].StartPoint.X == Lines[_lineIndex - 1].StartPoint.X ||
-                        Lines[_lineIndex - 2].StartPoint.Y == Lines[_lineIndex - 1].StartPoint.Y)
-                        {
-                            Lines[_lineIndex - 1].StartPoint = Lines[_lineIndex - 2].StartPoint;
-                            Lines.Remove(Lines[_lineIndex - 2]);
-                        }
-                    }
-                }
-
-            }
-            if (Points[_lineIndex + 1] == Points[_lineIndex + 2])
-            {
-                Points.Remove(Points[_lineIndex + 1]);
-                if ((_lineIndex + 2) < Points.Count)
-                {
-                    if (Points[_lineIndex].X == Points[_lineIndex + 1].X && Points[_lineIndex + 1].X == Points[_lineIndex + 2].X ||
-                    Points[_lineIndex].Y == Points[_lineIndex + 1].Y && Points[_lineIndex + 1].Y == Points[_lineIndex + 2].Y)
-                    {
-                        Points.Remove(Points[_lineIndex + 1]);
-                    }
-                }
-            }
-            if (_lineIndex > 0)
-            {
-                if (Points[_lineIndex - 1] == Points[_lineIndex])
-                {
-                    Points.Remove(Points[_lineIndex]);
+                    Points.Remove(Points[_lineIndex - 1]);
                     _lineIndex--;
-                    if ((_lineIndex - 1) >= 0)
+                }
+                if(_lineIndex > 0)
+                {
+                    if (Lines[_lineIndex - 1].EndPoint == Lines[_lineIndex].StartPoint && Lines[_lineIndex - 1].StartPoint.X == Lines[_lineIndex].EndPoint.X)
                     {
-                        if (Points[_lineIndex - 1].X == Points[_lineIndex].X ||
-                        Points[_lineIndex - 1].Y == Points[_lineIndex].Y)
+                        RemoveLine(_lineIndex, 1);
+                        RemovePoint(_lineIndex, 1);
+                        Lines[_lineIndex - 1].EndPoint = Lines[_lineIndex].StartPoint;
+                        _lineIndex--;
+                    }
+                    else if (Lines[_lineIndex - 1].EndPoint == Lines[_lineIndex].StartPoint && Lines[_lineIndex - 1].StartPoint.Y == Lines[_lineIndex].EndPoint.Y)
+                    {
+                        RemoveLine(_lineIndex, 1);
+                        RemovePoint(_lineIndex, 1);
+                        Lines[_lineIndex - 1].EndPoint = Lines[_lineIndex].StartPoint;
+                        _lineIndex--;
+                    }
+                }
+            }
+            if(_lineIndex < (Lines.Count - 1))
+            {
+                if (Lines[_lineIndex + 1].StartPoint == Lines[_lineIndex + 1].EndPoint)
+                {
+                    RemoveLine(_lineIndex + 1, 1);
+                    RemovePoint(_lineIndex + 1, 1);
+                }
+                if (_lineIndex < (Lines.Count - 1))
+                {
+                    if (Lines[_lineIndex].EndPoint == Lines[_lineIndex + 1].StartPoint && Lines[_lineIndex].StartPoint.X == Lines[_lineIndex + 1].EndPoint.X)
+                    {
+                        if (_lineIndex < (Lines.Count - 1))
                         {
-                            Points.Remove(Points[_lineIndex]);
+                            Lines[_lineIndex].EndPoint = Lines[_lineIndex + 1].EndPoint;
                         }
+                        RemoveLine(_lineIndex + 1, 1);
+                        RemovePoint(_lineIndex + 1, 1);
+
+                    }
+                    else if (Lines[_lineIndex].EndPoint == Lines[_lineIndex + 1].StartPoint && Lines[_lineIndex].StartPoint.Y == Lines[_lineIndex + 1].EndPoint.Y)
+                    {
+                        if (_lineIndex < (Lines.Count - 1))
+                        {
+                            Lines[_lineIndex].EndPoint = Lines[_lineIndex + 1].EndPoint;
+                        }
+                        RemoveLine(_lineIndex + 1, 1);
+                        RemovePoint(_lineIndex + 1, 1);
                     }
                 }
 
             }
-            PointsDump.Value = string.Join("\r\n", Points.Select(p => $"{p.X} {p.Y}"));
+
+            DumpPoints();
             RaisePropertyChanged(nameof(Points));
-            RaisePropertyChanged(nameof(PointsDump));
 
         }
         private void OnEdgeDragStarted(DragStartedEventArgs args)
@@ -227,7 +227,6 @@ namespace DraggableApp.Controls.ViewModels
                     _lineIndex = Lines.Count - 1;
                 }
             }
-
         }
         private void OnEdgeDragDelta(DragDeltaEventArgs args)
         {
@@ -347,94 +346,71 @@ namespace DraggableApp.Controls.ViewModels
             RaisePropertyChanged(nameof(EndPoint));
             RaisePropertyChanged(nameof(Points));
             RaisePropertyChanged(nameof(Lines));
-            PointsDump.Value = string.Join("\r\n", Points.Select(p => $"{p.X} {p.Y}"));
+            DumpPoints();
 
         }
         private void OnEdgeDragCompleted(DragCompletedEventArgs args)
         {
             if(_pointIndex == 0)
             {
-
-                if (_pointIndex < Points.Count - 2)
+                if(_pointIndex < (Points.Count - 2))
                 {
-                    if (Points[_pointIndex] == Points[_pointIndex + 1])
+                    if (Points[_pointIndex + 1] == Points[_pointIndex + 2])
                     {
+                        Lines[_lineIndex].EndPoint = Points[_pointIndex + 2];
                         RemovePoint(_pointIndex + 1, 1);
-                        RemoveLine(_lineIndex + 1, 1);
-
-                        if (_pointIndex < Points.Count - 2)
-                        {
-                            Lines[_lineIndex].EndPoint = Points[_pointIndex + 1];
-                        }
+                        RemoveLine(_lineIndex + 1, -1);
                     }
-                    else if (Points[_pointIndex].X == Points[_pointIndex + 2].X)
+                }
+                if (_pointIndex < (Points.Count - 2))
+                {
+                    if (Points[_pointIndex].X == Points[_pointIndex + 2].X)
                     {
-                        RemovePoint(_pointIndex + 1, 1);
+                        Lines[_lineIndex].EndPoint = Points[_pointIndex + 2];
                         RemovePoint(_pointIndex + 1, 1);
                         RemoveLine(_lineIndex + 1, 1);
-                        RemoveLine(_lineIndex + 1, 1);
-
-                        if (_pointIndex < Points.Count - 2)
-                        {
-                            Lines[_lineIndex].EndPoint = Points[_pointIndex + 1];
-                        }
                     }
                     else if (Points[_pointIndex].Y == Points[_pointIndex + 2].Y)
                     {
-                        RemovePoint(_pointIndex + 1, 1);
+                        Lines[_lineIndex].StartPoint = Points[_pointIndex + 2];
                         RemovePoint(_pointIndex + 1, 1);
                         RemoveLine(_lineIndex + 1, 1);
-                        RemoveLine(_lineIndex + 1, 1);
-
-                        if (_pointIndex < Points.Count - 2)
-                        {
-                            Lines[_lineIndex].EndPoint = Points[_pointIndex + 1];
-                        }
                     }
                 }
-           }
+
+
+            }
             else
             {
                 if(_pointIndex > 1)
                 {
-                    if (Points[_pointIndex] == Points[_pointIndex - 1])
+                    if (Points[_pointIndex - 1] == Points[_pointIndex - 2])
                     {
-                        Points.Remove(Points[Points.Count - 1]);
-                        Lines.Remove(Lines[Lines.Count - 1]);
-                        if (_pointIndex > 0)
-                        {
-                            Lines[Lines.Count - 1].StartPoint = Points[Points.Count - 1];
-                        }
+                        Lines[_lineIndex].StartPoint = Points[Points.Count - 2];
+                        RemovePoint(_pointIndex - 1, -1);
+                        RemoveLine(_lineIndex - 1, -1);
+                        _pointIndex--;
+                        _lineIndex--;
                     }
-                    else if (Points[_pointIndex].X == Points[_pointIndex - 2].X)
+                }
+                if (_pointIndex > 1)
+                {
+                    if (Points[_pointIndex].X == Points[_pointIndex - 2].X)
                     {
-                        RemovePoint(_pointIndex -2, -1);
-                        RemovePoint(_pointIndex -2, -1);
-                        RemoveLine(_lineIndex -1, -1);
-                        RemoveLine(_lineIndex -1, -1);
-                        if(_pointIndex > 0)
-                        {
-                            Lines[Lines.Count - 1].StartPoint = Points[Points.Count - 1];
-                        }
+                        Lines[_lineIndex].StartPoint = Points[Points.Count - 2];
+                        RemovePoint(_pointIndex - 1, -1);
+                        RemoveLine(_lineIndex - 1, -1);
                     }
                     else if (Points[_pointIndex].Y == Points[_pointIndex - 2].Y)
                     {
-                        RemovePoint(_pointIndex - 2, -1);
-                        RemovePoint(_pointIndex - 2, -1);
+                        Lines[_lineIndex].StartPoint = Points[_pointIndex - 2];
+                        RemovePoint(_pointIndex - 1, -1);
                         RemoveLine(_lineIndex - 1, -1);
-                        RemoveLine(_lineIndex - 1, -1);
-
-                        if (_pointIndex > 0)
-                        {
-                            Lines[Lines.Count - 1].EndPoint = Points[Points.Count - 1];
-                        }
                     }
-
                 }
             }
-            PointsDump.Value = string.Join("\r\n", Points.Select(p => $"{p.X} {p.Y}"));
+            DumpPoints();
             RaisePropertyChanged(nameof(Points));
-            RaisePropertyChanged(nameof(PointsDump));
             RaisePropertyChanged(nameof(Lines));
 
         }
@@ -461,7 +437,7 @@ namespace DraggableApp.Controls.ViewModels
         {
             if(direction < 0)
             {
-                if (index > 1)
+                if (index >= 0)
                 {
                     Lines.Remove(Lines[index]);
                 }
@@ -469,12 +445,19 @@ namespace DraggableApp.Controls.ViewModels
             }
             else
             {
-                if (index < (Lines.Count - 1))
+                if (index <= (Lines.Count - 1))
                 {
                     Lines.Remove(Lines[index]);
                 }
 
             }
+        }
+        private void DumpPoints()
+        {
+            PointsDump.Value = string.Join("\r\n", Points.Select(p => $"{p.X} {p.Y}")) + "\r\n\r\n"
+    + String.Join("\r\n", Lines.Select(line => $"{line.StartPoint.X} {line.StartPoint.Y} : {line.EndPoint.X} {line.EndPoint.Y}"));
+            RaisePropertyChanged(nameof(PointsDump));
+
         }
     }
 }

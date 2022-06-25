@@ -57,11 +57,11 @@ namespace DraggableApp.ViewModels
 
                 DraggableLeft.Value += (int)x.HorizontalChange;
                 DraggableTop.Value += (int)x.VerticalChange;
-                InitialPosition = new Point { X = DraggableTop.Value, Y = DraggableLeft.Value };
+                InitialPosition = new Point { X = DraggableLeft.Value, Y = DraggableTop.Value };
             });
             DraggableDragStartedCommand = new DelegateCommand<DragStartedEventArgs>((x) =>
             {
-                InitialPosition = new Point { X = DraggableTop.Value, Y = DraggableLeft.Value };
+                InitialPosition = new Point { X = DraggableLeft.Value, Y = DraggableTop.Value };
             });
         }
     }

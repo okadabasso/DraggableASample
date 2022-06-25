@@ -13,6 +13,7 @@
         </StackPanel>
         <Canvas Background="White">
             <controls:Connector DataContext="{Binding Connector}"></controls:Connector>
+            <controls:DiagramItem DataContext="{Binding DiagramItem}" Canvas.Top="{Binding Top}" Canvas.Left="{Binding Left}"></controls:DiagramItem>
         </Canvas>
     </DockPanel>
 </UserControl>

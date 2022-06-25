@@ -9,7 +9,7 @@
             <TextBlock Text="{Binding X.Value}" Width="50"></TextBlock>
             <TextBlock Text="{Binding Y.Value}" Width="50"></TextBlock>
         </StackPanel>
-        <Canvas Background="LightCyan">
+        <Canvas Background="White">
 
             <Border  BorderThickness="2"
                 BorderBrush="Black"
