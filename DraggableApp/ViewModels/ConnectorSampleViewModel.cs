@@ -30,7 +30,7 @@ namespace DraggableApp.ViewModels
             }) ;
             DiagramItem = new DiagramItemVIewModel { 
                 Left = 500,
-                Top = 500,
+                Top = 100,
                 Width = 100,
                 Height = 100
             };
